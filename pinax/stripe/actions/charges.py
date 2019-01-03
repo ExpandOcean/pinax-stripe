@@ -160,7 +160,12 @@ def sync_charges_for_customer(customer):
     Args:
         customer: a pinax.stripe.models.Customer object
     """
-    for charge in customer.stripe_customer.charges().data:
+    # zy modified 
+    # latest stripe-python does not support .charges() method
+    # for charge in customer.stripe_customer.charges().data:
+    stripe_customer = customer.stripe_customer
+    stripe_charges = stripe.Charge.list(customer=stripe_customer.id)
+    for charge in stripe_charges.data:
         sync_charge_from_stripe_data(charge)
 
 
