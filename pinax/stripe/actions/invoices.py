@@ -131,7 +131,13 @@ def sync_invoices_for_customer(customer):
     Args:
         customer: the customer for whom to synchronize all invoices
     """
-    for invoice in customer.stripe_customer.invoices().data:
+    # zy modified 
+    # latest stripe-python does not support .invoices() method
+    # for invoice in customer.stripe_customer.invoices().data:
+    # end
+    stripe_customer = customer.stripe_customer
+    stripe_invoices = stripe.Invoice.list(customer=stripe_customer.id)
+    for invoice in stripe_invoices.data:
         sync_invoice_from_stripe_data(invoice, send_receipt=False)
 
 
